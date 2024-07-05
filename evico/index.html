@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>evi - For enthusiasts by enthusiasts</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Source+Code+Pro&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="loader-container">
+        <div class="loader">
+            <div class="loading-text">Loading...</div>
+            <div class="loading-bars">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </div>
+    </div>
+    <main style="display: none;">
+        <section class="editor">
+            <div class="editor-header">
+                <div class="tabs-container" id="tabs-container">
+                    <div class="tab active" data-tab="announcement" draggable="true">
+                        announcement.evi
+                        <span class="close-tab">×</span>
+                    </div>
+                    <div class="tab" data-tab="dev" draggable="true">
+                        dev.evi
+                        <span class="close-tab">×</span>
+                    </div>
+                </div>
+            </div>
+            <div class="code-section active" id="announcement-section">
+                <pre class="code-editor">
+                    <code>
+01 | <span class="comment">// Welcome to evi</span>
+02 | <span class="keyword">const</span> product = <span class="string">'evi'</span>;
+03 | <span class="keyword">const</span> releaseDate = <span class="string">'Q1 2025'</span>;
+04 | 
+05 | <span class="comment">// Be ready for a new coding experience</span>
+06 | <span class="function">init()</span> {
+07 |     <span class="emoji emoji-rocket">🚀</span> <span class="function-call">announce()</span>;
+08 |     <span class="emoji emoji-star">🌟</span> <span class="function-call">launch()</span>;
+09 | }
+                    </code>
+                </pre>
+            </div>
+            <div class="code-section" id="dev-section">
+                <pre class="code-editor">
+                    <code>
+01 | <span class="comment">// Welcome to evi</span>
+02 | <span class="comment">// Want to work with us?</span> 
+03 | <span class="comment">// ryan@tryevi.co</span> 
+04 | 
+05 | <span class="comment">// Be ready for a new coding experience</span>
+06 | <span class="function">init()</span> {
+07 |     <span class="emoji emoji-rocket">🚀</span> <span class="function-call">develop()</span>;
+08 |     <span class="emoji emoji-star">🌟</span> <span class="function-call">launch()</span>;
+09 | }
+                    </code>
+                </pre>
+            </div>
+        </section>
+    </main>
+
+    <div class="email-updates">
+        <div class="signup-box">
+            <label for="email" class="terminal-prompt">updates@evi:~$</label>
+            <input type="email" placeholder="email@example.com 📧" id="email">
+            <button type="button" class="terminal-enter">Enter</button>
+        </div>
+    </div>
+
+    <div class="rocket-container" style="display: none;">
+        <div class="rocket">🚀</div>
+    </div>
+
+    <div class="thank-you-message" style="display: none;">
+        <h1>Thank you for your interest! 🎉🎊</h1>
+    </div>
+
+    <script>
+        window.addEventListener('load', function () {
+            const loaderContainer = document.querySelector('.loader-container');
+            const mainContent = document.querySelector('main');
+
+            setTimeout(function () {
+                loaderContainer.style.opacity = '0';
+                loaderContainer.style.visibility = 'hidden';
+                mainContent.style.display = 'block';
+            }, 2000); 
+        });
+
+        document.addEventListener('click', function (event) {
+            if (event.target.classList.contains('tab')) {
+                const tab = event.target;
+                const tabType = tab.getAttribute('data-tab');
+                
+                document.querySelectorAll('.tab').forEach(t => {
+                    t.classList.remove('active');
+                });
+
+                tab.classList.add('active');
+
+                document.querySelectorAll('.code-section').forEach(section => {
+                    section.classList.remove('active');
+                    if (section.id === `${tabType}-section`) {
+                        section.classList.add('active');
+                    }
+                });
+            }
+
+            if (event.target.classList.contains('close-tab')) {
+                const tab = event.target.parentNode;
+                const tabType = tab.getAttribute('data-tab');
+
+                tab.remove();
+                document.getElementById(`${tabType}-section`).remove();
+
+                const remainingTab = document.querySelector('.tab:not(.inactive)');
+                if (remainingTab) {
+                    remainingTab.classList.add('active');
+                    const remainingTabType = remainingTab.getAttribute('data-tab');
+                    document.getElementById(`${remainingTabType}-section`).classList.add('active');
+                }
+            }
+        });
+
+        document.querySelector('.terminal-enter').addEventListener('click', function() {
+            const emailInput = document.getElementById('email');
+            const email = emailInput.value;
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (emailPattern.test(email)) {
+                document.querySelector('main').style.display = 'none';
+                document.querySelector('.email-updates').style.display = 'none';
+
+                const rocketContainer = document.querySelector('.rocket-container');
+                rocketContainer.style.display = 'block';
+
+                setTimeout(function() {
+                    rocketContainer.classList.add('launching');
+                }, 500);
+
+                setTimeout(function() {
+                    rocketContainer.style.display = 'none';
+                    document.querySelector('.thank-you-message').style.display = 'block';
+                }, 3000); 
+            } else {
+                alert('Please enter a valid email address.');
+            }
+        });
+
+        let draggedTab = null;
+
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('dragstart', function(event) {
+                draggedTab = tab;
+                event.dataTransfer.effectAllowed = 'move';
+                event.dataTransfer.setData('text/html', tab.outerHTML);
+                tab.classList.add('dragging');
+            });
+
+            tab.addEventListener('dragend', function() {
+                tab.classList.remove('dragging');
+                draggedTab = null;
+            });
+        });
+
+        document.getElementById('tabs-container').addEventListener('dragover', function(event) {
+            event.preventDefault();
+            event.dataTransfer.dropEffect = 'move';
+            const tabs = Array.from(this.children);
+            const currentTab = event.target.closest('.tab');
+            if (currentTab && currentTab !== draggedTab) {
+                const draggingIndex = tabs.indexOf(draggedTab);
+                const targetIndex = tabs.indexOf(currentTab);
+                if (draggingIndex > targetIndex) {
+                    this.insertBefore(draggedTab, currentTab);
+                } else {
+                    this.insertBefore(draggedTab, currentTab.nextSibling);
+                }
+            }
+        });
+
+        document.getElementById('tabs-container').addEventListener('drop', function(event) {
+            event.preventDefault();
+        });
+    </script>
+</body>
+</html>
